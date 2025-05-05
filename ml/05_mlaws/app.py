@@ -42,16 +42,19 @@ if __name__=="__main__":
 
     train,test=train_test_split(data)
 
-    train_x = train.drop(["quality"], axis=1)
-    test_x = test.drop(["quality"], axis=1)
-    train_y = train[["quality"]]
-    test_y = test[["quality"]]
+    train_x = train.drop(["quality"], axis=1) #independent
+    test_x = test.drop(["quality"], axis=1) #independent
+    train_y = train[["quality"]] #dependent
+    test_y = test[["quality"]]  #dependent
 
+    # ElasticNet
+
+    # hyperparaments of elasticnet
     alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
     l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
 
     with mlflow.start_run():
-        lr=ElasticNet(alpha=alpha,l1_ratio=l1_ratio,random_state=42)
+        lr=ElasticNet(alpha=alpha,l1_ratio=l1_ratio,random_state=42) # linearRegession
         lr.fit(train_x,train_y)
 
         predicted_qualities = lr.predict(test_x)
@@ -71,7 +74,7 @@ if __name__=="__main__":
 
         ## For the remote server AWS we need to do the setup
 
-        remote_server_uri="http://ec2-54-158-152-207.compute-1.amazonaws.com:5000/"
+        remote_server_uri="http://ec2-54-158-152-207.compute-1.amazonaws.com:5000/" #create new ec2 instance of aws 
         mlflow.set_tracking_uri(remote_server_uri)
 
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
