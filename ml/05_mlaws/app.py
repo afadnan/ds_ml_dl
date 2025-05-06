@@ -50,6 +50,10 @@ if __name__=="__main__":
     # ElasticNet
 
     # hyperparaments of elasticnet
+
+    # argv -> give command from terminal after running the code
+    # argv[1] -> fist input will be alpha
+    # argv[2] -> second 
     alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
     l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
 
