@@ -3,3 +3,7 @@ mlruns
 mlartifacts/
 venvmlpipe/
 venvmlaws
+
+#ml all algo codes
+mlcsv
+venvmlcode

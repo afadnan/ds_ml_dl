@@ -1,3 +1,5 @@
 {
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "Codegeex.Chat.fontSize": 20,
+    "Codegeex.GenerationPreference": "automatic"
 }
