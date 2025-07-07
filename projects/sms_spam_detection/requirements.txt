@@ -2,3 +2,6 @@ ipykernel
 numpy
 pandas
 scikit-learn
+matplotlib==3.10.3
+nltk
+seaborn
