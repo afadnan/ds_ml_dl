@@ -6,3 +6,5 @@ matplotlib==3.10.3
 nltk
 seaborn
 wordcloud
+xgboost
+SVC
