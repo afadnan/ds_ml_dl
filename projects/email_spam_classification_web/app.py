@@ -1,54 +1,65 @@
 import streamlit as st
 import pickle
-import string
-from nltk.corpus import stopwords
-import nltk
-from nltk.stem.porter import PorterStemmer
+import numpy as np
 
-ps = PorterStemmer()
+# import the model
+pipe = pickle.load(open('pipe.pkl','rb'))
+df = pickle.load(open('df.pkl','rb'))
 
+st.title("Laptop Predictor")
 
-def transform_text(text):
-    text = text.lower()
-    text = nltk.word_tokenize(text)
+# brand
+company = st.selectbox('Brand',df['Company'].unique())
 
-    y = []
-    for i in text:
-        if i.isalnum():
-            y.append(i)
+# type of laptop
+type = st.selectbox('Type',df['TypeName'].unique())
 
-    text = y[:]
-    y.clear()
+# Ram
+ram = st.selectbox('RAM(in GB)',[2,4,6,8,12,16,24,32,64])
 
-    for i in text:
-        if i not in stopwords.words('english') and i not in string.punctuation:
-            y.append(i)
+# weight
+weight = st.number_input('Weight of the Laptop')
 
-    text = y[:]
-    y.clear()
+# Touchscreen
+touchscreen = st.selectbox('Touchscreen',['No','Yes'])
 
-    for i in text:
-        y.append(ps.stem(i))
+# IPS
+ips = st.selectbox('IPS',['No','Yes'])
 
-    return " ".join(y)
+# screen size
+screen_size = st.slider('Scrensize in inches', 10.0, 18.0, 13.0)
 
-tfidf = pickle.load(open('vectorizer.pkl','rb'))
-model = pickle.load(open('model.pkl','rb'))
+# resolution
+resolution = st.selectbox('Screen Resolution',['1920x1080','1366x768','1600x900','3840x2160','3200x1800','2880x1800','2560x1600','2560x1440','2304x1440'])
 
-st.title("Email Spam Classifier")
+#cpu
+cpu = st.selectbox('CPU',df['Cpu brand'].unique())
 
-input_sms = st.text_area("Enter the message")
+hdd = st.selectbox('HDD(in GB)',[0,128,256,512,1024,2048])
 
-if st.button('Predict'):
+ssd = st.selectbox('SSD(in GB)',[0,8,128,256,512,1024])
 
-    # 1. preprocess
-    transformed_sms = transform_text(input_sms)
-    # 2. vectorize
-    vector_input = tfidf.transform([transformed_sms])
-    # 3. predict
-    result = model.predict(vector_input)[0]
-    # 4. Display
-    if result == 1:
-        st.header("Spam")
+gpu = st.selectbox('GPU',df['Gpu brand'].unique())
+
+os = st.selectbox('OS',df['os'].unique())
+
+if st.button('Predict Price'):
+    # query
+    ppi = None
+    if touchscreen == 'Yes':
+        touchscreen = 1
     else:
-        st.header("Not Spam")
+        touchscreen = 0
+
+    if ips == 'Yes':
+        ips = 1
+    else:
+        ips = 0
+
+    X_res = int(resolution.split('x')[0])
+    Y_res = int(resolution.split('x')[1])
+    ppi = ((X_res**2) + (Y_res**2))**0.5/screen_size
+    query = np.array([company,type,ram,weight,touchscreen,ips,ppi,cpu,hdd,ssd,gpu,os])
+
+    query = query.reshape(1,12)
+    st.title("The predicted price of this configuration is " + str(int(np.exp(pipe.predict(query)[0]))))
