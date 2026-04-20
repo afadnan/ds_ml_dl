@@ -7,7 +7,6 @@ pandas
 numpy==1.23.5
 
 #DLML
-
 keras
 tensorflow
 hyperopt # hyperparameter tunning in ANN
